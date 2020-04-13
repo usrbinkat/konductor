@@ -63,8 +63,11 @@ RUN pip3 download ansible                                         \
     && pip3 download awscli                                       \
     && pip3 download boto3  
 
+WORKDIR /tmp/
+RUN tar -czvf archive.tar.gz /tmp/archive
+
 RUN yum clean all                                                 \
-    && rm -rf /var/cache /var/log/dnf* /var/log/yum.*             \
+    && rm -rf /tmp/archive /var/cache /var/log/dnf* /var/log/yum.*\
     && echo
 
 WORKDIR /
