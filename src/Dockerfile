@@ -21,21 +21,11 @@ ARG urlJQ="https://github.com/stedolan/jq/releases/download/jq-${versJQ}/jq-linu
 ARG urlOC="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-client-linux.tar.gz"
 ARG urlOCINST="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-install-linux.tar.gz"
 ARG yumList="\
-            git \
-            vim \
-            sudo \
             tree \
             tmux \
-            rsync \
-            bsdtar \
             podman \
-            openssl \
             buildah \
-            ncurses \
-            nmap-ncat \
-            python3-pip \
             fuse-overlayfs  \
-            openssh-server  \
             openssh-clients \
             bash-completion \
             "
