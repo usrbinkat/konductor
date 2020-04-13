@@ -26,7 +26,7 @@ ARG yumList="\
             podman \
             buildah \
             fuse-overlayfs  \
-            openssh-clients \
+            openssh-server \
             bash-completion \
             "
 
