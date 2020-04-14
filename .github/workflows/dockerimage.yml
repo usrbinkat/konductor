@@ -27,34 +27,34 @@ jobs:
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
     - name: Docker Build 
       run: |
-        docker build . --file ./src/Dockerfile --tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest
+        docker build . --file ./src/Dockerfile --tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest
     - name: Docker Tag Latest
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder
+        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Docker Tag OCP Version
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:${{ env.versocp }}
+        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}
     - name: Docker Tag Git Commit Hash
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:${{ env.githash }} 
+        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }} 
     - name: Quay Tag Latest
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder
+        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag OCP Version
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:${{ env.versocp }}
+        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}
     - name: Quay Tag Git Commit Hash
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:${{ env.githash }} 
+        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }} 
     - name: Docker Push docker.io
       run: |
-        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder;                    \
-        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest;             \
-        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:${{ env.versocp }}; \
-        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:${{ env.githash }}
+        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder;                    \
+        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest;             \
+        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}; \
+        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }}
     - name: Docker Push quay.io
       run: |
-        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder;                    \
-        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:latest;             \
-        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:${{ env.versocp }}; \
-        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/onebuilder:${{ env.githash }}
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder;                    \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest;             \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}; \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }}
