@@ -33,13 +33,9 @@ ARG yumList="\
 RUN set -ex                                                       
 
 RUN mkdir -p /tmp/archive/pip                                     \
-    && mkdir -p /tmp/archive/yum                                  \
     $$ mkdir -p /tmp/archive/curl 
 
 COPY src/requirements.txt /tmp/requirements.txt
-
-RUN yum update -y --setopt=tsflags=nodocs                             \
-    && yum install -y --setopt=tsflags=nodocs python3-pip
 
 WORKDIR /tmp/archive/curl
 RUN curl -LO ${urlOCINST}                                          \
@@ -50,7 +46,7 @@ RUN curl -LO ${urlOCINST}                                          \
 RUN yum install -y --setopt=tsflags=nodocs --downloadonly         \
     --downloaddir=/tmp/archive/yum ${yumList}        
 
-RUN pip3 download -d /tmp/archive/pip -r /tmp/requirements.txt ansible
+RUN pip3 download -d /tmp/archive/pip -r /tmp/requirements.txt 
 
 WORKDIR /tmp/
 RUN tar -czvf archive.tar.gz /tmp/archive
