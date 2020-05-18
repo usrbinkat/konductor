@@ -32,8 +32,8 @@ jobs:
       run: |
         docker build . \
                  --force-rm \
-                 --build-arg "varRunDate=$(date +%y%m%d%I%M%S)"
-                 --file ./src/Dockerfile \
+                 --build-arg "varRunDate=$(date +%y%m%d%I%M%S)" \
+                 --file ./src/Dockerfile                        \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
       run: |
