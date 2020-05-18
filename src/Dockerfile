@@ -41,8 +41,8 @@ RUN set -ex \
      && yum update  -y --setopt=tsflags=nodocs \
      && yum install -y --setopt=tsflags=nodocs \
           python3-pip \
-          yum-plugin-downloadonly \
     && echo
+#         yum-plugin-downloadonly \
 
 # Change base workdir
 WORKDIR /tmp/builder/artifacts/rpm
