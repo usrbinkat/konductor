@@ -19,7 +19,7 @@ jobs:
         echo "::set-env name=githash::$githash"
     - name: Get OCP Version
       run: |
-        export versocp="$(awk '/openshift/{print $2}')"
+        export versocp="$(awk -F'[="]' '/varVerOpenshift/{print $3}' src/variables)"
         echo "::set-env name=versocp::$versocp"
     - name: Quay.io Login
       run: |
