@@ -1,38 +1,49 @@
 FROM centos:latest
 ################################################################################
+# Package Lists
+ARG varListRpms="\
+             git \
+             vim \
+             sudo \
+             tree \
+             tmux \
+             rsync \
+             bsdtar \
+             podman \
+             openssl \
+             buildah \
+             ncurses \
+             nmap-ncap \
+             python3-pip \
+             fuse-overlayfs \
+             openssh-server \
+             openssh-clients \
+             bash-completion \
+             "
+ARG varListPip="\
+             boto3 \
+             awscli \
+             ansible \
+             "
+
+################################################################################
 # version tracking
 ARG varVerOpenshift="${varVerOpenshift}"
 ARG varVerTerraform="${varVerTerraform}"
 ARG varVerJq="${varVerJq}"
 
-#ARG varVerOpenshift="4.3.8"
-#ARG varVerTerraform="0.12.25"
-#ARG varVerJq="1.6"
-
+# Build Variables
+ARG varDirDependencies="/tmp/dependencies"
 ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
 ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
 ARG varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64"
-ARG rpmList="\
-        tree \
-        tmux \
-        podman \
-        buildah \
-        fuse-overlayfs  \
-        openssh-server \
-        bash-completion \
-        "
-ARG pipList="\
-        boto3 \
-        awscli \
-        ansible \
-        "
 
 ################################################################################
 RUN set -ex \
-     && mkdir -p /tmp/builder/artifacts/pip  \
-     && mkdir -p /tmp/builder/artifacts/rpm  \
-     && mkdir -p /tmp/builder/artifacts/curl \
+     && mkdir -p ${varDirDependencies}/pip  \
+     && mkdir -p ${varDirDependencies}/rpm  \
+     && mkdir -p ${varDirDependencies}/curl \
     && echo
 
 RUN set -ex \
@@ -48,12 +59,12 @@ WORKDIR /tmp/builder/artifacts/rpm
 RUN set -ex \
      && yum install -y \
           --downloadonly \
-          --downloaddir=/tmp/builder/artifacts/rpm \
-          ${rpmList} \
+          --downloaddir=${varDirDependencies}/rpm \
+          ${varListRpms} \
     && echo
 
 # Change base workdir
-WORKDIR /tmp/builder/artifacts/curl
+WORKDIR ${varDirDependencies}/curl
 
 RUN set -ex \
      && curl -LO ${varUrlOpenshift} \
@@ -63,31 +74,32 @@ RUN set -ex \
     && echo
 
 # Change base workdir
-WORKDIR /tmp/builder/artifacts/pip
+WORKDIR ${varDirDependencies}/pip
 
 RUN set -ex \
      && pip3 download \
-            -d /builder/artifacts/pip \
-          ${pipList}                  \
+            -d ${varDirDependencies}/pip \
+          ${varListPip}                  \
     && echo
 
 # Change base workdir
 WORKDIR /tmp/
-RUN tar -czvf artifacts.tar.gz builder/artifacts
+RUN tar -czvf dependencies.tar.gz dependencies
 
 RUN yum clean all \
     && rm -rf \
-        /tmp/builder/artifacts \
-        /var/cache \
+        /tmp/dependencies \
+        /var/cache/* \
         /var/log/dnf* \
-        /var/log/yum.* \
+        /var/log/yum* \
    ; echo
 
 ################################################################################
 # ContainerOne | Cloud Orchestration Tools - Point of Origin
-LABEL Vendor="containercraft.io" \
-      maintainer="ContainerCraft.io" \
-      BuildDate="${varRunDate}" \
-      License=GPLv3 
 ENV versOCP="${varVerOpenshift}"
-ENTRYPOINT ["bash"]
+LABEL Vendor="containercraft.io"     \
+      OpenShift="${versOCP}"         \
+      BuildDate="${varRunDate}"      \
+      maintainer="ContainerCraft.io" \
+      License=GPLv3 
+CMD ["bash"]
