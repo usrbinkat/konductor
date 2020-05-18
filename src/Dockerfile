@@ -7,15 +7,15 @@ LABEL Vendor="containercraft.io" \
 
 ################################################################################
 # version tracking
-#varRunDate="$(date +%y%m%d%I%M%S)"
-varVerOpenshift="4.3.8"
-varVerTerraform="0.12.25"
-varVerJq="1.6"
-varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-install-linux.tar.gz"
-varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-client-linux.tar.gz"
-varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
-varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64"
-rpmList="\
+ARG varRunDate="$(date +%y%m%d%I%M%S)"
+ARG varVerOpenshift="4.3.8"
+ARG varVerTerraform="0.12.25"
+ARG varVerJq="1.6"
+ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-install-linux.tar.gz"
+ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-client-linux.tar.gz"
+ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
+ARG varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64"
+ARG rpmList="\
         tree \
         tmux \
         podman \
@@ -24,7 +24,7 @@ rpmList="\
         openssh-server \
         bash-completion \
         "
-pipList="\
+ARG pipList="\
         boto3 \
         awscli \
         ansible \
