@@ -13,7 +13,6 @@ ARG varListRpms="\
              openssl \
              buildah \
              ncurses \
-             nmap-ncap \
              python3-pip \
              fuse-overlayfs \
              openssh-server \
