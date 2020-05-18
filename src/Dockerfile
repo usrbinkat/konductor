@@ -59,9 +59,9 @@ WORKDIR /tmp/builder/artifacts/curl
 
 RUN set -ex \
      && curl -LO ${varUrlOpenshift} \
-     && curl -LO ${varVerTerraform} \
+     && curl -LO ${varUrlTerraform} \
      && curl -LO ${varUrlOsInst}    \
-     && curl -LO ${varVerJq}        \
+     && curl -LO ${varUrlJq}        \
     && echo
 
 # Change base workdir
