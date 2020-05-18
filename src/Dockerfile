@@ -11,6 +11,7 @@ ARG varRunDate="$(date +%y%m%d%I%M%S)"
 ARG varVerOpenshift="4.3.8"
 ARG varVerTerraform="0.12.25"
 ARG varVerJq="1.6"
+
 ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOsInst}/openshift-install-linux.tar.gz"
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
 ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
