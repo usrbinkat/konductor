@@ -1,4 +1,4 @@
-name: DockerHubBuild
+name: QuayBuilderImagePipeline
 on:
   push:
     branches: 
@@ -7,7 +7,7 @@ on:
     branches: 
       - master
   schedule:
-    - cron: '0 2 * * 0' # Weekly on Sundays at 03:00
+    - cron: '0 2 * * 0'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,39 +19,23 @@ jobs:
         echo "::set-env name=githash::$githash"
     - name: Get OCP Version
       run: |
-        export versocp="$(cat src/ocp)"
+        export versocp="$(awk '/openshift/{print $2}')"
         echo "::set-env name=versocp::$versocp"
-    - name: Docker.io + Quay.io Login
+    - name: Quay.io Login
       run: |
-        echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin; \
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
-    - name: Docker Build 
+    - name: Image Build 
       run: |
-        docker build . --file ./src/Dockerfile --tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest
-    - name: Docker Tag Latest
-      run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
-    - name: Docker Tag OCP Version
-      run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}
-    - name: Docker Tag Git Commit Hash
-      run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }} 
+        docker build . --env-file ./src/variables --file ./src/Dockerfile --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
+        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest 
     - name: Quay Tag OCP Version
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}
+        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}
     - name: Quay Tag Git Commit Hash
       run: |
-        docker tag ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }} 
-    - name: Docker Push docker.io
-      run: |
-        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder;                    \
-        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest;             \
-        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}; \
-        docker push ${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }}
+        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }} 
     - name: Docker Push quay.io
       run: |
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder;                    \

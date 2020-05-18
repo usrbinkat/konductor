@@ -1,4 +1,0 @@
-###### Requirements with Version Specifiers ######
-ansible 
-awscli 
-boto3 
