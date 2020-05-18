@@ -24,7 +24,7 @@ RUN set -ex \
      && yum install \
           --downloadonly \
           --downloaddir=/tmp/builder/artifacts/rpm \
-          ${rpmList}
+          ${rpmList} \
     && echo
 
 # Change base workdir
@@ -48,7 +48,7 @@ RUN set -ex \
 
 # Change base workdir
 WORKDIR /tmp/
-RUN tar -czvf artifacts.tar.gz artifacts
+RUN tar -czvf artifacts.tar.gz builder/artifacts
 
 RUN yum clean all \
     && rm -rf \
