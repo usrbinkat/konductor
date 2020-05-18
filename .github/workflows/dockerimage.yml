@@ -26,7 +26,7 @@ jobs:
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
     - name: Image Build 
       run: |
-        docker build . --env-file ./src/variables --file ./src/Dockerfile --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
+        docker build . --build-arg ./src/variables --file ./src/Dockerfile --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
       run: |
         docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest 
