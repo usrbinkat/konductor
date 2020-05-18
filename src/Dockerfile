@@ -46,7 +46,7 @@ RUN set -ex \
 WORKDIR /tmp/builder/artifacts/rpm
 
 RUN set -ex \
-     && yum install \
+     && yum install -y \
           --downloadonly \
           --downloaddir=/tmp/builder/artifacts/rpm \
           ${rpmList} \
