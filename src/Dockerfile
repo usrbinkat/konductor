@@ -1,17 +1,13 @@
 FROM centos:latest
 ################################################################################
-# ContainerOne | Cloud Orchestration Tools - Point of Origin
-LABEL Vendor="containercraft.io" \
-      maintainer="ContainerCraft.io" \
-      BuildDate="${varRunDate}" \
-      License=GPLv3 
-
-################################################################################
 # version tracking
-#ARG varVerOpenshift="4.3.8"
 ARG varVerOpenshift="${varVerOpenshift}"
-ARG varVerTerraform="0.12.25"
-ARG varVerJq="1.6"
+ARG varVerTerraform="${varVerTerraform}"
+ARG varVerJq="${varVerJq}"
+
+#ARG varVerOpenshift="4.3.8"
+#ARG varVerTerraform="0.12.25"
+#ARG varVerJq="1.6"
 
 ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
@@ -87,5 +83,11 @@ RUN yum clean all \
         /var/log/yum.* \
    ; echo
 
+################################################################################
+# ContainerOne | Cloud Orchestration Tools - Point of Origin
+LABEL Vendor="containercraft.io" \
+      maintainer="ContainerCraft.io" \
+      BuildDate="${varRunDate}" \
+      License=GPLv3 
 ENV versOCP="${varVerOpenshift}"
 ENTRYPOINT ["/bin/bash"]

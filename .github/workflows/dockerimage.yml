@@ -17,7 +17,15 @@ jobs:
       run: |
         export githash="$(git log -1 --pretty=%h)"
         echo "::set-env name=githash::$githash"
-    - name: Get OCP Version
+    - name: Get JQ Version
+      run: |
+        export varverjq="$(awk -F'[="]' '/varVerJq/{print $3}' versions)"
+        echo "::set-env name=varverjq::$varverjq"
+    - name: Get Terraform Version
+      run: |
+        export varverterraform="$(awk -F'[="]' '/varVerTerraform/{print $3}' versions)"
+        echo "::set-env name=varverterraform::$varverterraform"
+    - name: Get OpenShift Version
       run: |
         export varveropenshift="$(awk -F'[="]' '/varVerOpenshift/{print $3}' versions)"
         echo "::set-env name=varveropenshift::$varveropenshift"
@@ -32,8 +40,10 @@ jobs:
       run: |
         docker build . \
                  --force-rm \
+                 --build-arg varVerJq=${{ env.varverjq }} \
                  --build-arg varRunDate=${{ env.varrundate }} \
                  --build-arg varVerOpenshift=${{ env.varveropenshift }} \
+                 --build-arg varVerTerraform=${{ env.varverterraform }} \
                  --file ./src/Dockerfile                        \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
