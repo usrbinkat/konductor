@@ -19,8 +19,8 @@ jobs:
         echo "::set-env name=githash::$githash"
     - name: Get OCP Version
       run: |
-        export versocp="$(awk -F'[="]' '/varVerOpenshift/{print $3}' versions)"
-        echo "::set-env name=versocp::$versocp"
+        export varveropenshift="$(awk -F'[="]' '/varVerOpenshift/{print $3}' versions)"
+        echo "::set-env name=varveropenshift::$varveropenshift"
     - name: Get Build Date
       run: |
         export varrundate="$(date +%y%m%d%I%M%S)"
@@ -32,7 +32,8 @@ jobs:
       run: |
         docker build . \
                  --force-rm \
-                 --build-arg "varRunDate=${{ env.varrundate }}" \
+                 --build-arg varRunDate=${{ env.varrundate }} \
+                 --build-arg varVerOpenshift=${{ env.varveropenshift }} \
                  --file ./src/Dockerfile                        \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
@@ -40,7 +41,7 @@ jobs:
         docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest 
     - name: Quay Tag OCP Version
       run: |
-        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}
+        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}
     - name: Quay Tag Git Commit Hash
       run: |
         docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }} 
@@ -48,5 +49,5 @@ jobs:
       run: |
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder;                    \
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest;             \
-        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.versocp }}; \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}; \
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }}

@@ -3,12 +3,12 @@ FROM centos:latest
 # ContainerOne | Cloud Orchestration Tools - Point of Origin
 LABEL Vendor="containercraft.io" \
       maintainer="ContainerCraft.io" \
+      BuildDate="${varrundate}" \
       License=GPLv3 
 
 ################################################################################
 # version tracking
-ARG varRunDate="$(date +%y%m%d%I%M%S)"
-ARG varVerOpenshift="4.3.8"
+#ARG varVerOpenshift="4.3.8"
 ARG varVerTerraform="0.12.25"
 ARG varVerJq="1.6"
 
