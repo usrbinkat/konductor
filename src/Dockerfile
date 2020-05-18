@@ -7,7 +7,7 @@ LABEL Vendor="containercraft.io" \
 
 ################################################################################
 # version tracking
-varRunDate="$(date +%y%m%d%I%M%S)"
+#varRunDate="$(date +%y%m%d%I%M%S)"
 varVerOpenshift="4.3.8"
 varVerTerraform="0.12.25"
 varVerJq="1.6"
