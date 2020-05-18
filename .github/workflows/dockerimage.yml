@@ -40,11 +40,11 @@ jobs:
       run: |
         docker build . \
                  --force-rm \
+                 --file ./src/Dockerfile \
                  --build-arg varVerJq=${{ env.varverjq }} \
                  --build-arg varRunDate=${{ env.varrundate }} \
                  --build-arg varVerOpenshift=${{ env.varveropenshift }} \
                  --build-arg varVerTerraform=${{ env.varverterraform }} \
-                 --file ./src/Dockerfile                        \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
       run: |

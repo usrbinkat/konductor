@@ -90,4 +90,4 @@ LABEL Vendor="containercraft.io" \
       BuildDate="${varRunDate}" \
       License=GPLv3 
 ENV versOCP="${varVerOpenshift}"
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["bash"]
