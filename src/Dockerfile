@@ -3,7 +3,7 @@ FROM centos:latest
 # ContainerOne | Cloud Orchestration Tools - Point of Origin
 LABEL Vendor="containercraft.io" \
       maintainer="ContainerCraft.io" \
-      BuildDate="${varrundate}" \
+      BuildDate="${varRunDate}" \
       License=GPLv3 
 
 ################################################################################
@@ -12,7 +12,7 @@ LABEL Vendor="containercraft.io" \
 ARG varVerTerraform="0.12.25"
 ARG varVerJq="1.6"
 
-ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOsInst}/openshift-install-linux.tar.gz"
+ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
 ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
 ARG varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64"
