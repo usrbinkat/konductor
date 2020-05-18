@@ -9,6 +9,7 @@ LABEL Vendor="containercraft.io" \
 ################################################################################
 # version tracking
 #ARG varVerOpenshift="4.3.8"
+ARG varVerOpenshift="${varVerOpenshift}"
 ARG varVerTerraform="0.12.25"
 ARG varVerJq="1.6"
 
