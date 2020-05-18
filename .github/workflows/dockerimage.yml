@@ -21,10 +21,10 @@ jobs:
       run: |
         export versocp="$(awk -F'[="]' '/varVerOpenshift/{print $3}' versions)"
         echo "::set-env name=versocp::$versocp"
-#   - name: Get Terraform Version
-#     run: |
-#       export versocp="$(awk -F'[="]' '/varVerOpenshift/{print $3}' versions)"
-#       echo "::set-env name=versocp::$versocp"
+    - name: Get Build Date
+      run: |
+        export varrundate="$(date +%y%m%d%I%M%S)"
+        echo "::set-env name=varrundate::$varrundate"
     - name: Quay.io Login
       run: |
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
@@ -32,7 +32,7 @@ jobs:
       run: |
         docker build . \
                  --force-rm \
-                 --build-arg "varRunDate=$(date +%y%m%d%I%M%S)" \
+                 --build-arg "varRunDate=${{ env.varrundate }}" \
                  --file ./src/Dockerfile                        \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
