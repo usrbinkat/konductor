@@ -13,7 +13,12 @@ ARG varListRpms="\
              openssl \
              buildah \
              ncurses \
+             rpm-libs \
+             audit-libs \
+             libselinux \
+             libsemanage \
              python3-pip \
+             iptables-libs \
              fuse-overlayfs \
              openssh-server \
              openssh-clients \
