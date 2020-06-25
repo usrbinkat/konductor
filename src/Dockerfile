@@ -108,7 +108,8 @@ RUN set -ex                                                                     
      && curl -L ${varUrlOsInst}                                                 \
           | tar xzvf - --directory ${varDirDependencies}/bin openshift-install  \
      && curl -L ${varUrlHelm}                                                   \
-          | tar xzvf - --directory ${varDirDependencies}/bin linux-amd64/helm   \
+          | tar xzvf - --directory /tmp linux-amd64/helm                        \
+     && mv /tmp/linux-amd64/helm   ${varDirDependencies}/bin/                   \
      && curl -L ${varUrlTerraform}                                              \
           | bsdtar -xvf- -C ${varDirDependencies}/bin                           \
      && curl -L ${varUrlJq}                                                     \
