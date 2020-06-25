@@ -2,7 +2,8 @@ FROM registry:2 as registry
 FROM centos:latest as rpm
 FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
 #FROM registry.fedoraproject.org/fedora as rpm
-FROM registry.access.redhat.com/ubi8/ubi:latest
+#FROM registry.access.redhat.com/ubi8/ubi:latest
+FROM ubi
 #################################################################################
 # OCP Version set in src/ocp
 #ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
@@ -135,12 +136,12 @@ RUN set -ex                                                                     
 WORKDIR /tmp/
 RUN set -ex                                                                     \
      && tar -czvf /root/dependencies.tar.gz dependencies                        \
-     && du -sh /root/dependencies.tar.gz                                        \
+     && du  -sh   /root/dependencies.tar.gz                                     \
     && echo
 
 # Cleanup container
+COPY --from=ubi /etc/pki         /etc/pki
 COPY --from=ubi /etc/yum.repos.d /etc/yum.repos.d
-COPY --from=ubi /etc/pki /etc/pki
 RUN yum clean all                                                               \
     && rm -rf                                                                   \
         /tmp/dependencies                                                       \
