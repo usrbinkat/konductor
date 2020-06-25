@@ -1,7 +1,7 @@
 FROM registry:2 as registry
-FROM centos:latest as centos
+FROM centos:latest as rpm
+#FROM registry.fedoraproject.org/fedora as rpm
 FROM registry.access.redhat.com/ubi8/ubi:latest
-#FROM registry.fedoraproject.org/fedora
 #################################################################################
 # OCP Version set in src/ocp
 ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
@@ -88,11 +88,20 @@ RUN set -ex                                                                     
 
 #################################################################################
 
+# Gather Dependencies | rpm
+WORKDIR /tmp/builder/artifacts/rpm
+COPY --from=rpm /etc/yum.repos.d /etc/yum.repos.d
+COPY --from=rpm /etc/pki /etc/pki
+RUN set -ex                                                                     \
+     && yum install -y                                                          \
+          --downloadonly                                                        \
+          --downloaddir=${varDirDependencies}/rpm                               \
+          ${varListRpms}                                                        \
+    && echo
+
 # Gather Dependencies | binaries
 WORKDIR ${varDirDependencies}/bin 
 COPY --from=registry /bin/registry  ${varDirDependencies}/bin/registry
-COPY --from=centos /etc/yum.repos.d /etc/yum.repos.d
-COPY --from=centos /etc/pki /etc/pki
 RUN set -ex                                                                     \
      && curl -L ${varUrlOpenshift}                                              \
           | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
@@ -106,15 +115,6 @@ RUN set -ex                                                                     
              -o ${varDirDependencies}/bin/jq                                    \
     && echo
 
-# Gather Dependencies | gcloud
-WORKDIR ${varDirDependencies}/gcloud
-RUN set -ex                                                                     \
-     && curl -L ${varUrlGcloud}                                                 \
-          --output /tmp/install-gcloud.sh                                       \
-     && /bin/bash -x /tmp/install-gcloud.sh --disable-prompts                   \
-          --install-dir=${varDirDependencies}/gcloud                            \
-    && echo
-
 # Gather Dependencies | Pip
 WORKDIR ${varDirDependencies}/pip
 RUN set -ex                                                                     \
@@ -123,14 +123,14 @@ RUN set -ex                                                                     
           ${varListPip}                                                         \
     && echo
 
-# Gather Dependencies | rpm
-WORKDIR /tmp/builder/artifacts/rpm
-RUN set -ex                                                                     \
-     && yum install -y                                                          \
-          --downloadonly                                                        \
-          --downloaddir=${varDirDependencies}/rpm                               \
-          ${varListRpms}                                                        \
-    && echo
+# Gather Dependencies | gcloud
+#WORKDIR ${varDirDependencies}/gcloud
+#RUN set -ex                                                                     \
+#     && curl -L ${varUrlGcloud}                                                 \
+#          --output /tmp/install-gcloud.sh                                       \
+#     && /bin/bash -x /tmp/install-gcloud.sh --disable-prompts                   \
+#          --install-dir=${varDirDependencies}/gcloud                            \
+#    && echo
 
 # Create Unified Tarball
 WORKDIR /tmp/
