@@ -1,5 +1,6 @@
 FROM registry:2 as registry
 FROM centos:latest as rpm
+FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
 #FROM registry.fedoraproject.org/fedora as rpm
 FROM registry.access.redhat.com/ubi8/ubi:latest
 #################################################################################
@@ -36,6 +37,7 @@ ARG varListRpms="\
              tree \
              tmux \
              rsync \
+             which \
              skopeo \
              bsdtar \
              podman \
@@ -77,32 +79,24 @@ RUN set -ex                                                                     
     && echo
 
 #################################################################################
-# Install Local Build Requirements
-RUN set -ex                                                                     \
-     && yum update  -y --setopt=tsflags=nodocs                                  \
-     && yum install -y --setopt=tsflags=nodocs                                  \
-                python3-pip                                                     \
-                bsdtar                                                          \
-                which                                                           \
-    && echo
-
-#################################################################################
 
 # Gather Dependencies | rpm
-WORKDIR /tmp/builder/artifacts/rpm
 COPY --from=rpm /etc/yum.repos.d /etc/yum.repos.d
 COPY --from=rpm /etc/pki /etc/pki
 RUN set -ex                                                                     \
+     && yum update  -y --setopt=tsflags=nodocs                                  \
      && yum install -y                                                          \
           --downloadonly                                                        \
           --downloaddir=${varDirDependencies}/rpm                               \
           ${varListRpms}                                                        \
     && echo
 
+# Install Local Build Requirements
 # Gather Dependencies | binaries
-WORKDIR ${varDirDependencies}/bin 
 COPY --from=registry /bin/registry  ${varDirDependencies}/bin/registry
 RUN set -ex                                                                     \
+     && yum install -y --setopt=tsflags=nodocs                                  \
+                bsdtar                                                          \
      && curl -L ${varUrlOpenshift}                                              \
           | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
      && curl -L ${varUrlOsInst}                                                 \
@@ -118,15 +112,19 @@ RUN set -ex                                                                     
 
 # Gather Dependencies | Pip
 WORKDIR ${varDirDependencies}/pip
+# Install Local Build Requirements
 RUN set -ex                                                                     \
+     && yum install -y --setopt=tsflags=nodocs                                  \
+                python3-pip                                                     \
      && pip3 download                                                           \
-            -d ${varDirDependencies}/pip                                        \
+                -d ${varDirDependencies}/pip                                    \
           ${varListPip}                                                         \
     && echo
 
 # Gather Dependencies | gcloud
-#WORKDIR ${varDirDependencies}/gcloud
 #RUN set -ex                                                                     \
+#     && yum install -y --setopt=tsflags=nodocs                                  \
+#                which                                                           \
 #     && curl -L ${varUrlGcloud}                                                 \
 #          --output /tmp/install-gcloud.sh                                       \
 #     && /bin/bash -x /tmp/install-gcloud.sh --disable-prompts                   \
@@ -141,6 +139,8 @@ RUN set -ex                                                                     
     && echo
 
 # Cleanup container
+COPY --from=ubi /etc/yum.repos.d /etc/yum.repos.d
+COPY --from=ubi /etc/pki /etc/pki
 RUN yum clean all                                                               \
     && rm -rf                                                                   \
         /tmp/dependencies                                                       \
