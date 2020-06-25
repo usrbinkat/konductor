@@ -1,6 +1,6 @@
-FROM registry:2 as builder
+FROM registry:2 as registry
+FROM centos:latest as centos
 FROM registry.access.redhat.com/ubi8/ubi:latest
-#FROM centos:latest
 #FROM registry.fedoraproject.org/fedora
 #################################################################################
 # OCP Version set in src/ocp
@@ -90,7 +90,9 @@ RUN set -ex                                                                     
 
 # Gather Dependencies | binaries
 WORKDIR ${varDirDependencies}/bin 
-COPY --from=builder /bin/registry  ${varDirDependencies}/bin/registry
+COPY --from=registry /bin/registry  ${varDirDependencies}/bin/registry
+COPY --from=centos /etc/yum.repos.d /etc/yum.repos.d
+COPY --from=centos /etc/pki /etc/pki
 RUN set -ex                                                                     \
      && curl -L ${varUrlOpenshift}                                              \
           | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
