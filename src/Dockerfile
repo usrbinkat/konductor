@@ -82,6 +82,7 @@ RUN set -ex                                                                     
      && yum install -y --setopt=tsflags=nodocs                                  \
                 python3-pip                                                     \
                 bsdtar                                                          \
+                which                                                           \
     && echo
 
 #################################################################################
