@@ -1,5 +1,5 @@
 FROM registry:2 as builder
-FROM ceontos:latest
+FROM centos:latest
 #FROM registry.fedoraproject.org/fedora
 #################################################################################
 # OCP Version set in src/ocp
