@@ -1,6 +1,7 @@
 #FROM registry.fedoraproject.org/fedora as rpm
 FROM centos:latest as rpm
 FROM registry:2 as registry
+FROM registry.access.redhat.com/ubi8/ubi:latest as ubi8
 FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
 FROM ubi
 #################################################################################
@@ -68,13 +69,13 @@ ARG varListPip="\
              "
 
 # Build Variables
-ARG varDirDependencies="/tmp/dependencies"
+WORKDIR /root
+ARG varDirDependencies="/root/dependencies"
 
 # Create Artifact Directories
 RUN set -ex                                                                     \
      && mkdir -p ${varDirDependencies}/bin                                      \
      && mkdir -p ${varDirDependencies}/pip                                      \
-     && mkdir -p ${varDirDependencies}/rpm                                      \
      && mkdir -p ${varDirDependencies}/gcloud                                   \
     && echo
 
@@ -83,16 +84,17 @@ RUN set -ex                                                                     
 # Gather Dependencies | rpm
 COPY --from=rpm /etc/yum.repos.d /etc/yum.repos.d
 COPY --from=rpm /etc/pki /etc/pki
-RUN set -ex                                                                     \
+RUN set -ex \
+     && mkdir /tmp/rpm                                                          \
      && yum update  -y --setopt=tsflags=nodocs                                  \
      && yum install -y                                                          \
-          --downloadonly                                                        \
-          --downloaddir=${varDirDependencies}/rpm/                              \
-          ${varListRpms}                                                        \
+              --downloadonly                                                    \
+              --downloaddir=/tmp/rpm/                                           \
+            ${varListRpms}                                                      \
+     && cp -r /tmp/rpm /root/dependencies/rpm                                   \
      && ls -l ${varDirDependencies}/rpm/*.rpm                                   \
     && echo
 
-# Install Local Build Requirements
 # Gather Dependencies | binaries
 COPY --from=registry /bin/registry  ${varDirDependencies}/bin/registry
 RUN set -ex                                                                     \
@@ -112,8 +114,6 @@ RUN set -ex                                                                     
     && echo
 
 # Gather Dependencies | Pip
-WORKDIR ${varDirDependencies}/pip
-# Install Local Build Requirements
 RUN set -ex                                                                     \
      && yum install -y --setopt=tsflags=nodocs                                  \
                 python3-pip                                                     \
@@ -133,18 +133,17 @@ RUN set -ex                                                                     
 #    && echo
 
 # Create Unified Tarball
-WORKDIR /tmp/
 RUN set -ex                                                                     \
      && tar -czvf /root/dependencies.tar.gz dependencies                        \
      && du  -sh   /root/dependencies.tar.gz                                     \
     && echo
 
 # Cleanup container
-COPY --from=ubi /etc/pki         /etc/pki
-COPY --from=ubi /etc/yum.repos.d /etc/yum.repos.d
+COPY --from=ubi8 /etc/pki         /etc/pki
+COPY --from=ubi8 /etc/yum.repos.d /etc/yum.repos.d
 RUN yum clean all                                                               \
     && rm -rf                                                                   \
-        /tmp/dependencies                                                       \
+        /root/dependencies                                                      \
         /var/cache/*                                                            \
         /var/log/dnf*                                                           \
         /var/log/yum*                                                           \
