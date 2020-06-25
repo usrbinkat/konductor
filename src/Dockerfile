@@ -78,21 +78,12 @@ RUN set -ex                                                                     
 # Install Local Build Requirements
 RUN set -ex                                                                     \
      && yum update  -y --setopt=tsflags=nodocs                                  \
-     && yum install -y --setopt=tsflags=nodocs python3-pip bsdtar               \
+     && yum install -y --setopt=tsflags=nodocs                                  \
+                python3-pip                                                     \
+                bsdtar                                                          \
     && echo
 
 #################################################################################
-# Load Artifacts
-
-
-# Gather Dependencies | binaries
-WORKDIR ${varDirDependencies}/gcloud
-RUN set -ex                                                                     \
-     && curl -L ${varUrlGcloud}                                                 \
-          --output /tmp/install-gcloud.sh                                       \
-     && /bin/bash -x /tmp/install-gcloud.sh --disable-prompts                   \
-          --install-dir=${varDirDependencies}/gcloud                            \
-    && echo
 
 # Gather Dependencies | binaries
 WORKDIR ${varDirDependencies}/bin 
@@ -108,6 +99,15 @@ RUN set -ex                                                                     
           | bsdtar -xvf- -C ${varDirDependencies}/bin                           \
      && curl -L ${varUrlJq}                                                     \
              -o ${varDirDependencies}/bin/jq                                    \
+    && echo
+
+# Gather Dependencies | gcloud
+WORKDIR ${varDirDependencies}/gcloud
+RUN set -ex                                                                     \
+     && curl -L ${varUrlGcloud}                                                 \
+          --output /tmp/install-gcloud.sh                                       \
+     && /bin/bash -x /tmp/install-gcloud.sh --disable-prompts                   \
+          --install-dir=${varDirDependencies}/gcloud                            \
     && echo
 
 # Gather Dependencies | Pip
@@ -131,7 +131,7 @@ RUN set -ex                                                                     
 WORKDIR /tmp/
 RUN set -ex                                                                     \
      && tar -czvf /root/dependencies.tar.gz dependencies                        \
-     && du -sh dependencies.tar.gz                                              \
+     && du -sh /root/dependencies.tar.gz                                        \
     && echo
 
 # Cleanup container
