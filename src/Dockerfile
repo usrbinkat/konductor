@@ -1,5 +1,6 @@
 FROM registry:2 as builder
-FROM centos:latest
+FROM registry.access.redhat.com/ubi8/ubi:latest
+#FROM centos:latest
 #FROM registry.fedoraproject.org/fedora
 #################################################################################
 # OCP Version set in src/ocp

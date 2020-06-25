@@ -45,6 +45,8 @@ jobs:
                  --build-arg varRunDate=${{ env.varrundate }} \
                  --build-arg varVerOpenshift=${{ env.varveropenshift }} \
                  --build-arg varVerTerraform=${{ env.varverterraform }} \
+                 --volume ./centos/pki:/etc/pki \
+                 --volume ./centos/yum.repos.d:/etc/yum.repos.d \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
       run: |
