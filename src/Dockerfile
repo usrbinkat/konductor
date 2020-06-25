@@ -1,26 +1,59 @@
-FROM centos:latest
+FROM registry:2 as builder
+FROM registry.fedoraproject.org/fedora
+#################################################################################
+# OCP Version set in src/ocp
+ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
+#ARG versOCP="4.3.12"
+ARG varVerOpenshift="${versOCP}"
+ENV versOCP="${versOCP}"
+
+# Binary URL Version Locks
+ARG varVerTerraform="0.12.27"
+ARG varVerHelm="3.2.4"
+ARG varVerJq="1.6"
+
+# OC Download Urls
+ARG urlOC="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-client-linux.tar.gz"
+ARG urlOCINST="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-install-linux.tar.gz"
+
+# Binary Artifact URLS
+ARG varUrlGcloud="https://sdk.cloud.google.com"
+ARG varUrlHelm="https://get.helm.sh/helm-v${varVerHelm}-linux-amd64.tar.gz"
+ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
+ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
+ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
+ARG varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64"
+
 #################################################################################
 # Package Lists
 ARG varListRpms="\
              git \
              vim \
+             file \
              sudo \
              tree \
              tmux \
              rsync \
+             skopeo \
              bsdtar \
              podman \
+             iputils \
+             iproute \
+             ncurses \
              openssl \
              buildah \
-             ncurses \
              rpm-libs \
-             audit-libs \
+             nmap-ncat \
              libselinux \
+             audit-libs \
+             httpd-tools \
              libsemanage \
              python3-pip \
+             podman-remote \
              iptables-libs \
              fuse-overlayfs \
              openssh-server \
+             libvarlink-util \
              openssh-clients \
              bash-completion \
              "
@@ -30,29 +63,59 @@ ARG varListPip="\
              ansible \
              "
 
-#################################################################################
-# version tracking
-ARG varVerOpenshift="${varVerOpenshift}"
-ARG varVerTerraform="${varVerTerraform}"
-ARG varVerJq="${varVerJq}"
-
 # Build Variables
 ARG varDirDependencies="/tmp/dependencies"
-ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
-ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
-ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
-ARG varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64"
 
-#################################################################################
+# Create Artifact Directories
 RUN set -ex                                                                     \
+     && mkdir -p ${varDirDependencies}/bin                                      \
      && mkdir -p ${varDirDependencies}/pip                                      \
      && mkdir -p ${varDirDependencies}/rpm                                      \
-     && mkdir -p ${varDirDependencies}/curl                                     \
+     && mkdir -p ${varDirDependencies}/gcloud                                   \
     && echo
 
+#################################################################################
+# Install Local Build Requirements
 RUN set -ex                                                                     \
      && yum update  -y --setopt=tsflags=nodocs                                  \
-     && yum install -y --setopt=tsflags=nodocs python3-pip                      \
+     && yum install -y --setopt=tsflags=nodocs python3-pip bsdtar               \
+    && echo
+
+#################################################################################
+# Load Artifacts
+
+
+# Gather Dependencies | binaries
+WORKDIR ${varDirDependencies}/gcloud
+RUN set -ex                                                                     \
+     && curl -L ${urlGCLOUD}                                                    \
+          --output /tmp/install-gcloud.sh                                       \
+     && /bin/bash -x /tmp/install-gcloud.sh --disable-prompts                   \
+          --install-dir=${WORKDIR}                                              \
+    && echo
+
+# Gather Dependencies | binaries
+WORKDIR ${varDirDependencies}/bin 
+COPY --from=builder /bin/registry  ${WORKDIR}/registry
+RUN set -ex                                                                     \
+     && curl -L ${varUrlOpenshift}                                              \
+          | tar xzvf - --directory ${WORKDIR} kubectl oc                        \
+     && curl -L ${varUrlOsInst}                                                 \
+          | tar xzvf - --directory ${WORKDIR} openshift-install                 \
+     && curl -L ${varUrlHelm}                                                   \
+          | tar xzvf - --directory ${WORKDIR} linux-amd64/helm                  \
+     && curl -L ${varUrlTerraform}                                              \
+          | bsdtar -xvf- -C ${WORKDIR}                                          \
+     && curl -L ${varUrlJq}                                                     \
+             -o ${WORKDIR}/jq                                                   \
+    && echo
+
+# Gather Dependencies | Pip
+WORKDIR ${varDirDependencies}/pip
+RUN set -ex                                                                     \
+     && pip3 download                                                           \
+            -d ${varDirDependencies}/pip                                        \
+          ${varListPip}                                                         \
     && echo
 
 # Gather Dependencies | rpm
@@ -64,33 +127,15 @@ RUN set -ex                                                                     
           ${varListRpms}                                                        \
     && echo
 
-# Gather Dependencies | curl
-WORKDIR ${varDirDependencies}/curl
-RUN set -ex                                                                     \
-     && curl -LO ${varUrlOpenshift}                                             \
-     && curl -LO ${varUrlTerraform}                                             \
-     && curl -LO ${varUrlOsInst}                                                \
-     && curl -LO ${varUrlJq}                                                    \
-    && echo
-
-# Gather Dependencies | Pip
-WORKDIR ${varDirDependencies}/pip
-RUN set -ex                                                                     \
-     && pip3 download                                                           \
-            -d ${varDirDependencies}/pip                                        \
-          ${varListPip}                                                         \
-    && echo
-
 # Create Unified Tarball
 WORKDIR /tmp/
 RUN set -ex                                                                     \
-     && tar -czvf dependencies.tar.gz dependencies                              \
+     && tar -czvf /root/dependencies.tar.gz dependencies                        \
      && du -sh dependencies.tar.gz                                              \
     && echo
 
 # Cleanup container
 RUN yum clean all                                                               \
-    && history -c                                                               \
     && rm -rf                                                                   \
         /tmp/dependencies                                                       \
         /var/cache/*                                                            \
