@@ -4,8 +4,8 @@ FROM centos:latest as rpm
 FROM registry.access.redhat.com/ubi8/ubi:latest
 #################################################################################
 # OCP Version set in src/ocp
-ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
-#ARG versOCP="4.3.12"
+#ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
+ARG versOCP="4.3.12"
 ARG varVerOpenshift="${versOCP}"
 ENV versOCP="${versOCP}"
 
