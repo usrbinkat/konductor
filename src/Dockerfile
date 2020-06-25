@@ -91,23 +91,23 @@ RUN set -ex                                                                     
      && curl -L ${varUrlGcloud}                                                 \
           --output /tmp/install-gcloud.sh                                       \
      && /bin/bash -x /tmp/install-gcloud.sh --disable-prompts                   \
-          --install-dir=${WORKDIR}                                              \
+          --install-dir=${varDirDependencies}/gcloud
     && echo
 
 # Gather Dependencies | binaries
 WORKDIR ${varDirDependencies}/bin 
-COPY --from=builder /bin/registry  ${WORKDIR}/registry
+COPY --from=builder /bin/registry  ${varDirDependencies}/bin/registry
 RUN set -ex                                                                     \
      && curl -L ${varUrlOpenshift}                                              \
-          | tar xzvf - --directory ${WORKDIR} kubectl oc                        \
+          | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
      && curl -L ${varUrlOsInst}                                                 \
-          | tar xzvf - --directory ${WORKDIR} openshift-install                 \
+          | tar xzvf - --directory ${varDirDependencies}/bin openshift-install  \
      && curl -L ${varUrlHelm}                                                   \
-          | tar xzvf - --directory ${WORKDIR} linux-amd64/helm                  \
+          | tar xzvf - --directory ${varDirDependencies}/bin linux-amd64/helm   \
      && curl -L ${varUrlTerraform}                                              \
-          | bsdtar -xvf- -C ${WORKDIR}                                          \
+          | bsdtar -xvf- -C ${varDirDependencies}/bin                           \
      && curl -L ${varUrlJq}                                                     \
-             -o ${WORKDIR}/jq                                                   \
+             -o ${varDirDependencies}/bin/jq                                    \
     && echo
 
 # Gather Dependencies | Pip
