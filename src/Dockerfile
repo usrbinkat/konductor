@@ -88,7 +88,7 @@ RUN set -ex                                                                     
 # Gather Dependencies | binaries
 WORKDIR ${varDirDependencies}/gcloud
 RUN set -ex                                                                     \
-     && curl -L ${urlGCLOUD}                                                    \
+     && curl -L ${varUrlGcloud}                                                 \
           --output /tmp/install-gcloud.sh                                       \
      && /bin/bash -x /tmp/install-gcloud.sh --disable-prompts                   \
           --install-dir=${WORKDIR}                                              \
