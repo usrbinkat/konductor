@@ -1,5 +1,6 @@
 FROM registry:2 as builder
-FROM registry.fedoraproject.org/fedora
+FROM ceontos:latest
+#FROM registry.fedoraproject.org/fedora
 #################################################################################
 # OCP Version set in src/ocp
 ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
