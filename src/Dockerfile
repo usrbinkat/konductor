@@ -1,8 +1,7 @@
-FROM registry:2 as registry
-FROM centos:latest as rpm
-FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
 #FROM registry.fedoraproject.org/fedora as rpm
-#FROM registry.access.redhat.com/ubi8/ubi:latest
+FROM centos:latest as rpm
+FROM registry:2 as registry
+FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
 FROM ubi
 #################################################################################
 # OCP Version set in src/ocp
@@ -88,8 +87,9 @@ RUN set -ex                                                                     
      && yum update  -y --setopt=tsflags=nodocs                                  \
      && yum install -y                                                          \
           --downloadonly                                                        \
-          --downloaddir=${varDirDependencies}/rpm                               \
+          --downloaddir=${varDirDependencies}/rpm/                              \
           ${varListRpms}                                                        \
+     && ls -l ${varDirDependencies}/rpm/*.rpm                                   \
     && echo
 
 # Install Local Build Requirements
