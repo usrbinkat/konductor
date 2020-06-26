@@ -76,6 +76,7 @@ ARG varDirDependencies="/root/dependencies"
 RUN set -ex                                                                     \
      && mkdir -p ${varDirDependencies}/bin                                      \
      && mkdir -p ${varDirDependencies}/pip                                      \
+     && mkdir -p ${varDirDependencies}/config                                   \
      && mkdir -p ${varDirDependencies}/gcloud                                   \
     && echo
 
@@ -132,6 +133,9 @@ RUN set -ex                                                                     
 #          --install-dir=${varDirDependencies}/gcloud                            \
 #    && echo
 
+COPY --from=ubi8 /etc/pki         ${varDirDependencies}/config/etc-pki
+COPY --from=ubi8 /etc/yum.repos.d ${varDirDependencies}/config/etc-yum.repos.d
+
 # Create Unified Tarball
 RUN set -ex                                                                     \
      && tar -czvf /root/dependencies.tar.gz dependencies                        \
@@ -139,8 +143,6 @@ RUN set -ex                                                                     
     && echo
 
 # Cleanup container
-#COPY --from=ubi8 /etc/pki         /etc/pki
-#COPY --from=ubi8 /etc/yum.repos.d /etc/yum.repos.d
 RUN yum clean all                                                               \
     && rm -rf                                                                   \
         /root/dependencies                                                      \
