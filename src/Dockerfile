@@ -139,8 +139,8 @@ RUN set -ex                                                                     
     && echo
 
 # Cleanup container
-COPY --from=ubi8 /etc/pki         /etc/pki
-COPY --from=ubi8 /etc/yum.repos.d /etc/yum.repos.d
+#COPY --from=ubi8 /etc/pki         /etc/pki
+#COPY --from=ubi8 /etc/yum.repos.d /etc/yum.repos.d
 RUN yum clean all                                                               \
     && rm -rf                                                                   \
         /root/dependencies                                                      \

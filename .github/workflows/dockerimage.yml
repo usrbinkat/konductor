@@ -48,6 +48,9 @@ jobs:
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
     - name: Quay Tag Latest
       run: |
+        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:4.3.8 
+    - name: Quay Tag Latest
+      run: |
         docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest 
     - name: Quay Tag OCP Version
       run: |
