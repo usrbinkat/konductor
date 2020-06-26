@@ -1,5 +1,5 @@
-#FROM registry.fedoraproject.org/fedora as rpm
-FROM centos:latest as rpm
+#FROM centos:latest as rpm
+FROM registry.fedoraproject.org/fedora as rpm
 FROM registry:2 as registry
 FROM registry.access.redhat.com/ubi8/ubi:latest as ubi8
 FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
