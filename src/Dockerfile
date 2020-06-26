@@ -1,5 +1,5 @@
-#FROM centos:latest as rpm
-FROM registry.fedoraproject.org/fedora as rpm
+#FROM registry.fedoraproject.org/fedora as rpm
+FROM centos:latest as rpm
 FROM registry:2 as registry
 FROM registry.access.redhat.com/ubi8/ubi:latest as ubi8
 FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
@@ -7,7 +7,7 @@ FROM ubi
 #################################################################################
 # OCP Version set in src/ocp
 #ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
-ARG versOCP="4.3.12"
+ARG versOCP="4.4.9"
 ARG varVerOpenshift="${versOCP}"
 ENV versOCP="${versOCP}"
 
