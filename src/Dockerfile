@@ -48,6 +48,7 @@ ARG varListRpms="\
              openssl \
              buildah \
              rpm-libs \
+             procps-ng \
              nmap-ncat \
              libselinux \
              audit-libs \
