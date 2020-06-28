@@ -70,8 +70,12 @@ jobs:
       run: |
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin; \
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
+    - name: Clone Repo | ContainerOne
+      run: |
+        git clone https://github.com/containercraft/ContainerOne.git ~/ContainerOne
     - name: Build Image | ContainerOne
       run: |
+        cd ~/ContainerOne; 
         docker build . \
                  --force-rm \
                  --file ./src/Dockerfile \
