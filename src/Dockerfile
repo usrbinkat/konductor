@@ -49,6 +49,7 @@ ARG varListRpms="\
              buildah \
              rpm-libs \
              procps-ng \
+             net-tools \
              nmap-ncat \
              libselinux \
              audit-libs \
@@ -68,7 +69,6 @@ ARG varListPip="\
              awscli \
              ansible \
              "
-
 # Build Variables
 WORKDIR /root
 ARG varDirDependencies="/root/dependencies"
