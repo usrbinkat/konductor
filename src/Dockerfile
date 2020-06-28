@@ -75,6 +75,7 @@ ARG varDirDependencies="/root/dependencies"
 
 # Create Artifact Directories
 RUN set -ex                                                                     \
+     && mkdir -p /root/versions                                                 \
      && mkdir -p ${varDirDependencies}/bin                                      \
      && mkdir -p ${varDirDependencies}/pip                                      \
      && mkdir -p ${varDirDependencies}/config                                   \
@@ -104,6 +105,7 @@ RUN set -ex                                                                     
                 bsdtar                                                          \
      && curl -L ${varUrlOpenshift}                                              \
           | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
+     && ${varDirDependencies}/bin/oc version | tee /root/versions/oc.release    \
      && curl -L ${varUrlOsInst}                                                 \
           | tar xzvf - --directory ${varDirDependencies}/bin openshift-install  \
      && curl -L ${varUrlHelm}                                                   \
