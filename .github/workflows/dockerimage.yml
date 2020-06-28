@@ -30,7 +30,7 @@ jobs:
         echo "::set-env name=varverterraform::$varverterraform"
     - name: Get OpenShift Version
       run: |
-        export varveropenshift="$(awk -F'[="]' '/varVerOpenshift/{print $3}' versions)"
+        export varveropenshift="$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')"
         echo "::set-env name=varveropenshift::$varveropenshift"
     - name: Get Build Date
       run: |
