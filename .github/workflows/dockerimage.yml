@@ -13,13 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Webscrape openshift release.txt to get latest OC version 
-      run: |
-        sed -i "s/varVerOpenshift=.*/varVerOpenshift=$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')/g" versions
     - name: Get Git Commit Hash 
       run: |
         export githash="$(git log -1 --pretty=%h)"
         echo "::set-env name=githash::$githash"
+    - name: Get Build Date
+      run: |
+        export varrundate="$(date +%y%m%d%I%M%S)"
+        echo "::set-env name=varrundate::$varrundate"
+    - name: Webscrape openshift release.txt for latest OC version 
+      run: |
+        export varveropenshift="$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')"
+        echo "::set-env name=varveropenshift::$varveropenshift"
     - name: Get JQ Version
       run: |
         export varverjq="$(awk -F'[="]' '/varVerJq/{print $3}' versions)"
@@ -28,14 +33,6 @@ jobs:
       run: |
         export varverterraform="$(awk -F'[="]' '/varVerTerraform/{print $3}' versions)"
         echo "::set-env name=varverterraform::$varverterraform"
-    - name: Get OpenShift Version
-      run: |
-        export varveropenshift="$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')"
-        echo "::set-env name=varveropenshift::$varveropenshift"
-    - name: Get Build Date
-      run: |
-        export varrundate="$(date +%y%m%d%I%M%S)"
-        echo "::set-env name=varrundate::$varrundate"
     - name: Quay.io Login
       run: |
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
@@ -48,22 +45,22 @@ jobs:
                  --build-arg varRunDate=${{ env.varrundate }} \
                  --build-arg varVerOpenshift=${{ env.varveropenshift }} \
                  --build-arg varVerTerraform=${{ env.varverterraform }} \
-                 --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder
+                 --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder \
+                 --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
     - name: Quay Tag Latest
       run: |
         docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:4.3.8 
-    - name: Quay Tag Latest
+    - name: Image Tag | Latest
       run: |
         docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest 
-    - name: Quay Tag OCP Version
+    - name: Image Tag | OCP Version
       run: |
         docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}
-    - name: Quay Tag Git Commit Hash
+    - name: Image Tag | OCPVersion - Build Date - Git Commit Hash
       run: |
-        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }} 
-    - name: Docker Push quay.io
+        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
+    - name: Image Push quay.io
       run: |
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder;                    \
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest;             \
-        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}; \
-        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.githash }}
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}; \
