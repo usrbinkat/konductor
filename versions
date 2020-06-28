@@ -1,4 +1,4 @@
 # Dependency Version Declarations
-varVerOpenshift="4.4.9"
+varVerOpenshift="4.4.5"
 varVerTerraform="0.12.27"
 varVerJq="1.6"
