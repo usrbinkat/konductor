@@ -7,18 +7,19 @@ FROM ubi
 #################################################################################
 # OCP Version set in src/ocp
 #ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
-ARG versOCP="4.4.9"
-ARG varVerOpenshift="${versOCP}"
-ENV versOCP="${versOCP}"
+ARG versOCP="${varVerOpenshift}"
+ARG varVerOpenshift="${varVerOpenshift}"
+ENV versOCP="${varVerOpenshift}"
+ENV varVerOpenshift="${varVerOpenshift}"
 
 # Binary URL Version Locks
-ARG varVerTerraform="0.12.27"
+ARG varVerTerraform="${varVerTerraform}"
 ARG varVerHelm="3.2.4"
 ARG varVerJq="1.6"
 
 # OC Download Urls
-ARG urlOC="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-client-linux.tar.gz"
-ARG urlOCINST="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${versOCP}/openshift-install-linux.tar.gz"
+ARG urlOC="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
+ARG urlOCINST="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
 
 # Binary Artifact URLS
 ARG varUrlGcloud="https://sdk.cloud.google.com"
