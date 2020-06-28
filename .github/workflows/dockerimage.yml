@@ -15,6 +15,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install JQ Dependency
       run: |
+        jq --version
         apt-get update -y 
         apt-get install jq -y
     - name: Export Git Commit Hash
