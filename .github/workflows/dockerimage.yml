@@ -1,4 +1,4 @@
-name: QuayBuilderImagePipeline
+name: Builder & ContainerOne Image Pipeline
 on:
   push:
     branches: 
@@ -62,3 +62,35 @@ jobs:
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest;                                 \
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }};             \
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }};
+    - name: Variable | Git Commit Hash
+      run: |
+        export githash="$(git log -1 --pretty=%h)"
+        echo "::set-env name=githash::$githash"
+    - name: Docker Login | docker.io + quay.io
+      run: |
+        echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin; \
+        echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
+    - name: Build Image
+      run: |
+        docker build . \
+                 --file ./src/Dockerfile \
+                 --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one \
+                 --tag   quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one \
+                 --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:latest \
+                 --tag   quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:latest \
+                 --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }} \
+                 --tag   quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }} \
+                 --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }} \
+                 --tag   quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
+    - name: Image Push | docker.io
+      run: |
+        docker push docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one;             \
+        docker push docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:latest;      \
+        docker push docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }};        \
+        docker push docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
+    - name: Image Push | quy.io
+      run: |
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one;               \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:latest;        \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }};        \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
