@@ -50,6 +50,7 @@ jobs:
                  --build-arg varVerTerraform=${{ env.varverterraform }} \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest \
+                 --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }} \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
     - name: Quay Tag 4.3.8 | Temporary IronBank Workaround
       run: |
