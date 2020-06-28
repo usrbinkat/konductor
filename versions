@@ -1,4 +1,2 @@
-# Dependency Version Declarations
-varVerOpenshift="4.4.5"
-varVerTerraform="0.12.27"
+# Static Dependency Version Declarations
 varVerJq="1.6"

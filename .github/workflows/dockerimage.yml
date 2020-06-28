@@ -13,26 +13,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Get Git Commit Hash 
+    - name: Install JQ Dependency
+      run: |
+        apt-get update -y 
+        apt-get install jq -y
+    - name: Export Git Commit Hash
       run: |
         export githash="$(git log -1 --pretty=%h)"
         echo "::set-env name=githash::$githash"
-    - name: Get Build Date
+    - name: Export Build Date
       run: |
         export varrundate="$(date +%y%m%d%I%M%S)"
         echo "::set-env name=varrundate::$varrundate"
-    - name: Webscrape openshift release.txt for latest OC version 
+    - name: Webscrape OpenShift Release File for latest OC version 
       run: |
         export varveropenshift="$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')"
         echo "::set-env name=varveropenshift::$varveropenshift"
-    - name: Get JQ Version
+    - name: Get Latest Terraform Version
       run: |
-        export varverjq="$(awk -F'[="]' '/varVerJq/{print $3}' versions)"
-        echo "::set-env name=varverjq::$varverjq"
-    - name: Get Terraform Version
-      run: |
-        export varverterraform="$(awk -F'[="]' '/varVerTerraform/{print $3}' versions)"
+        export varverterraform="$(curl -sL https://api.github.com/repos/hashicorp/terraform/releases/latest | jq -r '.tag_name' | sed 's/v//g')"
         echo "::set-env name=varverterraform::$varverterraform"
+    - name: Get Latest JQ Version
+      run: |
+        export varverjq="$(curl -sL https://api.github.com/repos/stedolan/jq/releases/latest | jq -r '.tag_name' | sed 's/jq-//g')"
+        echo "::set-env name=varverjq::$varverjq"
     - name: Quay.io Login
       run: |
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
