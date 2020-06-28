@@ -13,10 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Get Git Commit Hash 
+    - name: Webscrape openshift release.txt to get latest OC version 
       run: |
-        export oc_version="$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')"
-        sed "s/varVerOpenshift=.*/varVerOpenshift=\"${oc_version}\"/g" versions
+        sed -i "s/varVerOpenshift=.*/varVerOpenshift=$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')/g" versions
     - name: Get Git Commit Hash 
       run: |
         export githash="$(git log -1 --pretty=%h)"
