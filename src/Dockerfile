@@ -6,16 +6,10 @@ FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
 FROM ubi
 #################################################################################
 # OCP Version set in src/ocp
-#ARG versOCP="$(curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/ Version:/{print $2}')"
-ARG versOCP="${varVerOpenshift}"
 ARG varVerOpenshift="${varVerOpenshift}"
-ENV versOCP="${varVerOpenshift}"
-ENV varVerOpenshift="${varVerOpenshift}"
-
-# Binary URL Version Locks
 ARG varVerTerraform="${varVerTerraform}"
-ARG varVerHelm="3.2.4"
-ARG varVerJq="1.6"
+ARG varVerHelm="${varVerHelm}"
+ARG varVerJq="${varVerJq}"
 
 # OC Download Urls
 ARG urlOC="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
@@ -28,6 +22,10 @@ ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}
 ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
 ARG varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64"
+
+# Build Variables
+WORKDIR /root
+ARG varDirDependencies="/root/dependencies"
 
 #################################################################################
 # Package Lists
@@ -70,9 +68,6 @@ ARG varListPip="\
              awscli \
              ansible \
              "
-# Build Variables
-WORKDIR /root
-ARG varDirDependencies="/root/dependencies"
 
 # Create Artifact Directories
 RUN set -ex                                                                     \
@@ -144,6 +139,7 @@ COPY --from=ubi8 /etc/yum.repos.d ${varDirDependencies}/config/etc-yum.repos.d
 RUN set -ex                                                                     \
      && tar -czvf /root/dependencies.tar.gz dependencies                        \
      && du  -sh   /root/dependencies.tar.gz                                     \
+     && rm  -rf   /root/dependencies                                            \
     && echo
 
 # Cleanup container
@@ -157,10 +153,9 @@ RUN yum clean all                                                               
 
 #################################################################################
 # ContainerOne | Cloud Orchestration Tools - Point of Origin
-ENV versOCP="${varVerOpenshift}"
+ENV varVerOpenshift="${varVerOpenshift}"
 LABEL Vendor="containercraft.io"                                                \
-      OpenShift="${versOCP}"                                                    \
       BuildDate="${varRunDate}"                                                 \
+      OpenShift="${varVerOpenshift}"                                            \
       maintainer="ContainerCraft.io"                                            \
       License=GPLv3 
-CMD ["bash"]
