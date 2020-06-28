@@ -13,48 +13,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Version Check | JQ Dependency
-      run: |
-        jq --version
-    - name: Export Git Commit Hash
-      run: |
-        export githash="$(git log -1 --pretty=%h)"
-        echo "::set-env name=githash::$githash"
-    - name: Export Build Date
+    - name: Variable | Export Build Date
       run: |
         export varrundate="$(date +%y%m%d%I%M%S)"
         echo "::set-env name=varrundate::$varrundate"
-    - name: Webscrape OpenShift Release File for latest OC version 
+    - name: Variable | Git Commit Hash
+      run: |
+        export githash="$(git log -1 --pretty=%h)"
+        echo "::set-env name=githash::$githash"
+    - name: Variable | Webscrape OpenShift Release File for latest OC version 
       run: |
         export varveropenshift="$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')"
         echo "::set-env name=varveropenshift::$varveropenshift"
-    - name: Get Latest Terraform Version
+    - name: Variable | Webscrape for Latest Terraform Version
       run: |
         export varverterraform="$(curl -sL https://api.github.com/repos/hashicorp/terraform/releases/latest | jq -r '.tag_name' | sed 's/v//g')"
         echo "::set-env name=varverterraform::$varverterraform"
-    - name: Get Latest JQ Version
+    - name: Variable | Webscrape Latest JQ Version
       run: |
         export varverjq="$(curl -sL https://api.github.com/repos/stedolan/jq/releases/latest | jq -r '.tag_name' | sed 's/jq-//g')"
         echo "::set-env name=varverjq::$varverjq"
     - name: Quay.io Login
       run: |
         echo "${{ secrets.DOCKERHUB_PASSWD }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin quay.io 
-    - name: Image Build 
+    - name: Build Image
       run: |
         docker build . \
                  --force-rm \
                  --file ./src/Dockerfile \
                  --build-arg varVerJq=${{ env.varverjq }} \
-                 --build-arg varRunDate=${{ env.varrundate }} \
                  --build-arg varVerOpenshift=${{ env.varveropenshift }} \
                  --build-arg varVerTerraform=${{ env.varverterraform }} \
+                 --build-arg varRunDate=${{ env.varrundate }} \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder \
+                 --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:4.3.8 \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:latest \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }} \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
-    - name: Quay Tag 4.3.8 | Temporary IronBank Workaround
-      run: |
-        docker tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:4.3.8 
     - name: Image Push quay.io
       run: |
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder;                    \
