@@ -87,7 +87,7 @@ jobs:
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:latest \
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }} \
-                 --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
+                 --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }} \
                  --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one \
                  --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:latest \
                  --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }} \
