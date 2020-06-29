@@ -92,7 +92,7 @@ jobs:
                  --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:latest \
                  --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }} \
                  --tag docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
-        cd ~/${OLDPWD}; 
+        cd ${OLDPWD}; 
     - name: Image Push | ContainerOne | docker.io
       run: |
         docker push docker.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/one;             \
