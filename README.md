@@ -1,8 +1,7 @@
-# ContainerOne-Builder
-Builder image for the Repo1 version of the ContainerOne image
-
-Packages up the dependencies in three different folders by type:
-* /tmp/archive/curl
-* /tmp/archive/pip
-* /tmp/archive/yum
-
+# [ContainerOne] RedHat UBI8 Build Dependency Collection & Bundle Pipeline Container
+### Collected Dependency Path/Types
+* /root/dependencies/bin : Golang binary Downloads
+* /root/dependencies/rpm : DNF RPM Package Downloads
+* /root/dependencies/pip : Python3-pip Package Downloads
+### Bundled into `/root/dependencies.tar.gz`
+[ContainerOne]:https://github.com/containercraft/ContainerOne/blob/master/README.md
