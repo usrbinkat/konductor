@@ -51,6 +51,7 @@ ARG varListRpms="\
              net-tools \
              nmap-ncat \
              libselinux \
+             bind-utils \
              audit-libs \
              httpd-tools \
              libsemanage \
