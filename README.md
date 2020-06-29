@@ -1,4 +1,4 @@
-## [ContainerOne] RedHat UBI8 Build Dependency Collection & Bundle Pipeline Container
+## [ContainerOne] RedHat UBI8 Build Dependency Bundle Pipeline Container
 ### Collected Dependency Path/Types
 * `/root/dependencies/bin` : Golang binary Downloads
 * `/root/dependencies/rpm` : DNF RPM Package Downloads
