@@ -18,6 +18,7 @@ ARG urlOCINST="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/
 # Binary Artifact URLS
 ARG varUrlGcloud="https://sdk.cloud.google.com"
 ARG varUrlHelm="https://get.helm.sh/helm-v${varVerHelm}-linux-amd64.tar.gz"
+ARG urlRelease="https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt"
 ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
 ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
@@ -26,6 +27,7 @@ ARG varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq
 # Build Variables
 WORKDIR /root
 ARG varDirDependencies="/root/dependencies"
+ARG listManifest="${varDirDependencies}/config/release.list"
 
 #################################################################################
 # Package Lists
@@ -80,6 +82,18 @@ RUN set -ex                                                                     
     && echo
 
 #################################################################################
+
+# Generate OCP Release Images List Manifest
+
+RUN set -ex \
+     && curl -sL ${urlRelease}                                                  \
+      | awk -F'[ ]' '/Pull From:/{print $3}'                                    \
+      | tee -a ${listManifest}                                                  \
+     && curl -sL ${urlRelease}                                                  \
+      | grep -v 'Pull From'                                                     \
+      | awk '/quay.io\/openshift-release/{print $2}'                            \
+      | tee -a ${listManifest}                                                  \
+    && echo
 
 # Gather Dependencies | rpm
 COPY --from=rpm /etc/yum.repos.d /etc/yum.repos.d
