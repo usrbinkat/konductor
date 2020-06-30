@@ -8,21 +8,21 @@ FROM ubi
 # OCP Version set in src/ocp
 WORKDIR /root
 ARG \
-  varVerOpenshift="${varVerOpenshift}" \
-  varVerTerraform="${varVerTerraform}" \
-  varVerHelm="${varVerHelm}" \
-  varVerJq="${varVerJq}" \
-  urlOC="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz" \
-  urlOCINST="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz" \
-  varUrlGcloud="https://sdk.cloud.google.com" \
-  varUrlHelm="https://get.helm.sh/helm-v${varVerHelm}-linux-amd64.tar.gz" \
-  urlRelease="https://mirror.openshift.com/pub/openshift-v4/clients/ocp/candidate/release.txt" \
-  varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip" \
-  varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz" \
-  varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz" \
-  varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64" \
-  varDirDependencies="/root/dependencies" \
-  listManifest="/var/lib/trno/release.list"
+  varVerOpenshift="${varVerOpenshift}";\
+  varVerTerraform="${varVerTerraform}";\
+  varVerHelm="${varVerHelm}";\
+  varVerJq="${varVerJq}";\
+  urlOC="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz";\
+  urlOCINST="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz";\
+  varUrlGcloud="https://sdk.cloud.google.com";\
+  varUrlHelm="https://get.helm.sh/helm-v${varVerHelm}-linux-amd64.tar.gz";\
+  urlRelease="https://mirror.openshift.com/pub/openshift-v4/clients/ocp/candidate/release.txt";\
+  varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip";\
+  varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz";\
+  varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz";\
+  varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq-linux64";\
+  varDirDependencies="/root/dependencies";\
+  listManifest="/var/lib/trno/release.list";
 
 #################################################################################
 # Package Lists
