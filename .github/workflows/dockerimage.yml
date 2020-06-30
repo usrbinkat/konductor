@@ -56,7 +56,7 @@ jobs:
                  --tag quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }}
     - name: Image Push | ContainerOne-Builder | quay.io
       run: |
-        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:nightlies                               \
+        docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:nightlies;                              \
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }};             \
         docker push quay.io/${{ secrets.DOCKERHUB_ORGANIZATION  }}/containerone-builder:${{ env.varveropenshift }}-${{ env.varrundate }}-${{ env.githash }};
     - name: Variable | Git Commit Hash
