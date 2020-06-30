@@ -27,7 +27,7 @@ ARG varUrlJq="https://github.com/stedolan/jq/releases/download/jq-${varVerJq}/jq
 # Build Variables
 WORKDIR /root
 ARG varDirDependencies="/root/dependencies"
-ARG listManifest="${varDirDependencies}/config/release.list"
+ARG listManifest="/var/lib/trno/release.list"
 
 #################################################################################
 # Package Lists
