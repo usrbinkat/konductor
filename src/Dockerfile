@@ -79,7 +79,7 @@ RUN set -ex                                                                     
      && mkdir -p ${varDirDependencies}/pip                                      \
      && mkdir -p ${varDirDependencies}/config                                   \
      && mkdir -p ${varDirDependencies}/gcloud                                   \
-     && mkdir -p ${listManifest}                                                \
+     && mkdir -p /var/lib/trno/                                                 \
     && echo
 
 #################################################################################
