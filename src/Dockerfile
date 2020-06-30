@@ -48,12 +48,12 @@ ARG varListRpms="\
              audit-libs \
              httpd-tools \
              python3-pip \
-             podman-remote \
              openssh-server \
              libvarlink-util \
              openssh-clients \
              bash-completion \
              "
+#            podman-remote \
 #            iproute \
 #            buildah \
 #            fuse-overlayfs \
