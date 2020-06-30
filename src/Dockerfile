@@ -42,30 +42,30 @@ ARG varListRpms="\
              which \
              skopeo \
              bsdtar \
-             podman \
              iputils \
-             iproute \
              ncurses \
              openssl \
-             buildah \
              rpm-libs \
              procps-ng \
              net-tools \
              nmap-ncat \
-             libselinux \
              bind-utils \
              audit-libs \
              httpd-tools \
-             libsemanage \
              python3-pip \
              podman-remote \
-             iptables-libs \
-             fuse-overlayfs \
              openssh-server \
              libvarlink-util \
              openssh-clients \
              bash-completion \
              "
+#            iproute \
+#            buildah \
+#            fuse-overlayfs \
+#            podman \
+#            libsemanage \
+#            iptables-libs \
+#            libselinux \
 ARG varListPip="\
              boto3 \
              awscli \
