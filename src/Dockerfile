@@ -18,7 +18,7 @@ ARG urlOCINST="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/
 # Binary Artifact URLS
 ARG varUrlGcloud="https://sdk.cloud.google.com"
 ARG varUrlHelm="https://get.helm.sh/helm-v${varVerHelm}-linux-amd64.tar.gz"
-ARG urlRelease="https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt"
+ARG urlRelease="https://mirror.openshift.com/pub/openshift-v4/clients/ocp/candidate/release.txt"
 ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}/terraform_${varVerTerraform}_linux_amd64.zip"
 ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"

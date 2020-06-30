@@ -23,7 +23,7 @@ jobs:
         echo "::set-env name=githash::$githash"
     - name: Variable | Webscrape OpenShift Release File for latest OC version 
       run: |
-        export varveropenshift="$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt | awk '/  Version/{print $2}')"
+        export varveropenshift="$(curl --silent https://mirror.openshift.com/pub/openshift-v4/clients/ocp/candidate/release.txt | awk '/  Version/{print $2}')"
         echo "::set-env name=varveropenshift::$varveropenshift"
     - name: Variable | Webscrape for Latest Terraform Version
       run: |
