@@ -1,6 +1,7 @@
 #FROM registry.fedoraproject.org/fedora as rpm
 FROM centos:latest as rpm
 FROM registry:2 as registry
+FROM quay.io/containercraft/openshift-install-mod:latest as oops
 FROM registry.access.redhat.com/ubi8/ubi:latest as ubi8
 FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
 FROM ubi
@@ -75,9 +76,10 @@ ARG varListPip="\
              ansible \
              "
 
-COPY --from=rpm /etc/pki /etc/pki
-COPY --from=rpm /etc/yum.repos.d /etc/yum.repos.d
-COPY --from=registry /bin/registry  ${varDirDependencies}/bin/registry
+COPY --from=rpm /etc/pki                      /etc/pki
+COPY --from=rpm /etc/yum.repos.d              /etc/yum.repos.d
+COPY --from=registry /bin/registry            ${varDirDependencies}/bin/registry
+COPY --from=oops /root/openshift-install-mod  ${varDirDependencies}/bin/openshift-install-mod
 #################################################################################
 RUN set -ex                                                                     \
      && mkdir -p /root/versions                                                 \
