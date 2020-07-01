@@ -90,10 +90,12 @@ RUN set -ex \
      && curl -sL ${urlRelease}                                                  \
       | awk -F'[ ]' '/Pull From:/{print $3}'                                    \
       | tee -a ${listManifest}                                                  \
+      | sed 's/quay.io\///g'                                                    \
      && curl -sL ${urlRelease}                                                  \
       | grep -v 'Pull From'                                                     \
       | awk '/quay.io\/openshift-release/{print $2}'                            \
       | tee -a ${listManifest}                                                  \
+      | sed 's/quay.io\///g'                                                    \
     && echo
 
 # Gather Dependencies | rpm
