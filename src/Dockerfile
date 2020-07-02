@@ -36,6 +36,7 @@ ARG listManifest="/var/lib/trno/release.list"
 #################################################################################
 # Package Lists
 ARG varListRpms="\
+             xz \
              git \
              vim \
              file \
