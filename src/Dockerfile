@@ -89,7 +89,7 @@ RUN set -ex                                                                     
      && mkdir -p ${varDirDependencies}/pip                                      \
      && mkdir -p ${varDirDependencies}/config                                   \
      && mkdir -p ${varDirDependencies}/gcloud                                   \
-     && mkdir -p /var/lib/koffer/                                                 \
+     && mkdir -p /var/lib/koffer/                                               \
      && curl -sL ${urlRelease}                                                  \
       | awk -F'[ ]' '/Pull From:/{print $3}'                                    \
       | tee -a ${listManifest}                                                  \
@@ -110,7 +110,7 @@ RUN set -ex                                                                     
               --downloadonly                                                    \
               --downloaddir=/tmp/rpm/                                           \
             ${varListRpms}                                                      \
-     && cp -r /tmp/rpm ${varDirDependencies/rpm                                 \
+     && cp -r /tmp/rpm ${varDirDependencies}/rpm                                \
      && ls -l ${varDirDependencies}/rpm/*.rpm                                   \
      && microdnf install -y                                                     \
                 bsdtar tar                                                      \
