@@ -110,7 +110,7 @@ RUN set -ex                                                                     
               --downloadonly                                                    \
               --downloaddir=/tmp/rpm/                                           \
             ${varListRpms}                                                      \
-     && cp -r /tmp/rpm /root/dependencies/rpm                                   \
+     && cp -r /tmp/rpm /root/build/rpm                                          \
      && ls -l ${varDirDependencies}/rpm/*.rpm                                   \
      && microdnf install -y                                                     \
                 bsdtar tar                                                      \
