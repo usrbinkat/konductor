@@ -30,7 +30,7 @@ ARG varUrlTerraform="https://releases.hashicorp.com/terraform/${varVerTerraform}
 ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-install-linux.tar.gz"
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
 
-ARG varDirDependencies="/root/dependencies"
+ARG varDirDependencies="/root/build/dependencies"
 ARG listManifest="/var/lib/trno/release.list"
 
 #################################################################################
@@ -131,7 +131,7 @@ RUN set -ex                                                                     
      && pip3 download                                                           \
                 -d ${varDirDependencies}/pip                                    \
           ${varListPip}                                                         \
-     && tar -czvf /root/dependencies.tar.gz dependencies                        \
+     && tar -czvf /root/build/dependencies.tar.gz -C /root/build dependencies   \
      && mv /root/dependencies.tar.gz /root/build/                               \
      && du  -sh   /root/dependencies.tar.gz                                     \
      && rm  -rf   /root/dependencies                                            \
