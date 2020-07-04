@@ -100,14 +100,14 @@ RUN set -ex                                                                     
       | sed 's/quay.io\///g'                                                    \
      && mkdir /tmp/rpm                                                          \
      && microdnf install dnf -y                                                 \
-     && dnfupdate  -y --setopt=tsflags=nodocs                                  \
-     && dnfinstall -y                                                          \
+     && dnf update  -y --setopt=tsflags=nodocs                                  \
+     && dnf install -y                                                          \
               --downloadonly                                                    \
               --downloaddir=/tmp/rpm/                                           \
             ${varListRpms}                                                      \
      && cp -r /tmp/rpm /root/dependencies/rpm                                   \
      && ls -l ${varDirDependencies}/rpm/*.rpm                                   \
-     && dnfinstall -y --setopt=tsflags=nodocs                                  \
+     && dnf install -y --setopt=tsflags=nodocs                                  \
                 bsdtar                                                          \
      && curl -L ${varUrlOpenshift}                                              \
           | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
@@ -121,7 +121,7 @@ RUN set -ex                                                                     
           | bsdtar -xvf- -C ${varDirDependencies}/bin                           \
      && curl -L ${varUrlJq}                                                     \
              -o ${varDirDependencies}/bin/jq                                    \
-     && dnfinstall -y --setopt=tsflags=nodocs                                  \
+     && dnf install -y --setopt=tsflags=nodocs                                  \
                 python3-pip                                                     \
      && pip3 download                                                           \
                 -d ${varDirDependencies}/pip                                    \
