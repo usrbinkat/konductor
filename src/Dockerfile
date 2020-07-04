@@ -132,9 +132,8 @@ RUN set -ex                                                                     
                 -d ${varDirDependencies}/pip                                    \
           ${varListPip}                                                         \
      && tar -czvf /root/build/dependencies.tar.gz -C /root/build dependencies   \
-     && mv /root/dependencies.tar.gz /root/build/                               \
-     && du  -sh   /root/dependencies.tar.gz                                     \
-     && rm  -rf   /root/dependencies                                            \
+     && du  -sh   /root/build/dependencies.tar.gz                               \
+     && rm  -rf   /root/build/dependencies                                      \
     && rm -rf                                                                   \
         /root/dependencies                                                      \
         /var/cache/*                                                            \
