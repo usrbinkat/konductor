@@ -99,14 +99,15 @@ RUN set -ex                                                                     
       | tee -a ${listManifest}                                                  \
       | sed 's/quay.io\///g'                                                    \
      && mkdir /tmp/rpm                                                          \
-     && yum update  -y --setopt=tsflags=nodocs                                  \
-     && yum install -y                                                          \
+     && microdnf install dnf -y                                                 \
+     && dnfupdate  -y --setopt=tsflags=nodocs                                  \
+     && dnfinstall -y                                                          \
               --downloadonly                                                    \
               --downloaddir=/tmp/rpm/                                           \
             ${varListRpms}                                                      \
      && cp -r /tmp/rpm /root/dependencies/rpm                                   \
      && ls -l ${varDirDependencies}/rpm/*.rpm                                   \
-     && yum install -y --setopt=tsflags=nodocs                                  \
+     && dnfinstall -y --setopt=tsflags=nodocs                                  \
                 bsdtar                                                          \
      && curl -L ${varUrlOpenshift}                                              \
           | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
@@ -120,7 +121,7 @@ RUN set -ex                                                                     
           | bsdtar -xvf- -C ${varDirDependencies}/bin                           \
      && curl -L ${varUrlJq}                                                     \
              -o ${varDirDependencies}/bin/jq                                    \
-     && yum install -y --setopt=tsflags=nodocs                                  \
+     && dnfinstall -y --setopt=tsflags=nodocs                                  \
                 python3-pip                                                     \
      && pip3 download                                                           \
                 -d ${varDirDependencies}/pip                                    \
@@ -142,7 +143,7 @@ COPY --from=ubi8 /etc/yum.repos.d ${varDirDependencies}/config/etc-yum.repos.d
 # Need to re-incorporate
 # Gather Dependencies | gcloud
 #RUN set -ex                                                                     \
-#     && yum install -y --setopt=tsflags=nodocs                                  \
+#     && dnfinstall -y --setopt=tsflags=nodocs                                  \
 #                which                                                           \
 #     && curl -L ${varUrlGcloud}                                                 \
 #          --output /tmp/install-gcloud.sh                                       \
