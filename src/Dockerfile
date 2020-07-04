@@ -31,7 +31,7 @@ ARG varUrlOsInst="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/o
 ARG varUrlOpenshift="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${varVerOpenshift}/openshift-client-linux.tar.gz"
 
 ARG varDirDependencies="/root/build/dependencies"
-ARG listManifest="/var/lib/trno/release.list"
+ARG listManifest="/var/lib/koffer/release.list"
 
 #################################################################################
 # Package Lists
@@ -89,7 +89,7 @@ RUN set -ex                                                                     
      && mkdir -p ${varDirDependencies}/pip                                      \
      && mkdir -p ${varDirDependencies}/config                                   \
      && mkdir -p ${varDirDependencies}/gcloud                                   \
-     && mkdir -p /var/lib/trno/                                                 \
+     && mkdir -p /var/lib/koffer/                                                 \
      && curl -sL ${urlRelease}                                                  \
       | awk -F'[ ]' '/Pull From:/{print $3}'                                    \
       | tee -a ${listManifest}                                                  \
