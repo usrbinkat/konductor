@@ -39,6 +39,7 @@ ARG varListRpms="\
              xz \
              git \
              vim \
+             tar \
              file \
              sudo \
              tree \
@@ -76,7 +77,6 @@ ARG varListPip="\
              awscli \
              ansible \
              "
-
 COPY --from=rpm /etc/pki                      /etc/pki
 COPY --from=rpm /etc/yum.repos.d              /etc/yum.repos.d
 COPY --from=registry /bin/registry            ${varDirDependencies}/bin/registry
@@ -107,8 +107,8 @@ RUN set -ex                                                                     
             ${varListRpms}                                                      \
      && cp -r /tmp/rpm /root/dependencies/rpm                                   \
      && ls -l ${varDirDependencies}/rpm/*.rpm                                   \
-     && dnf install -y --setopt=tsflags=nodocs                                  \
-                bsdtar                                                          \
+     && microdnf install -y                                                     \
+                bsdtar tar                                                      \
      && curl -L ${varUrlOpenshift}                                              \
           | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
      && ${varDirDependencies}/bin/oc version | tee /root/versions/oc.release    \
