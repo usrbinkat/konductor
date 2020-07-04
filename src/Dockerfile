@@ -84,6 +84,7 @@ COPY --from=oops /root/openshift-install-mod  ${varDirDependencies}/bin/openshif
 #################################################################################
 RUN set -ex                                                                     \
      && mkdir -p /root/versions                                                 \
+     && mkdir -p /root/build/rpm                                                \
      && mkdir -p ${varDirDependencies}/bin                                      \
      && mkdir -p ${varDirDependencies}/pip                                      \
      && mkdir -p ${varDirDependencies}/config                                   \
@@ -101,6 +102,10 @@ RUN set -ex                                                                     
      && mkdir /tmp/rpm                                                          \
      && microdnf install dnf -y                                                 \
      && dnf update  -y --setopt=tsflags=nodocs                                  \
+     && dnf install -y                                                          \
+              --downloadonly                                                    \
+              --downloaddir=/root/build/rpm/                                    \
+            bsdtar tar                                                          \
      && dnf install -y                                                          \
               --downloadonly                                                    \
               --downloaddir=/tmp/rpm/                                           \
@@ -127,6 +132,7 @@ RUN set -ex                                                                     
                 -d ${varDirDependencies}/pip                                    \
           ${varListPip}                                                         \
      && tar -czvf /root/dependencies.tar.gz dependencies                        \
+     && mv /root/dependencies.tar.gz /root/build/                               \
      && du  -sh   /root/dependencies.tar.gz                                     \
      && rm  -rf   /root/dependencies                                            \
     && rm -rf                                                                   \
