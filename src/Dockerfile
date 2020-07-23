@@ -2,8 +2,8 @@
 FROM centos:latest as rpm
 FROM registry:2 as registry
 FROM quay.io/containercraft/openshift-install-mod:latest as oops
-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest as ubi8
-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest as ubi
+FROM registry.access.redhat.com/ubi8/ubi:latest as ubi8
+FROM registry.access.redhat.com/ubi8/ubi:latest as ubi
 FROM ubi
 #################################################################################
 # ContainerOne | Cloud Orchestration Tools - Point of Origin
@@ -106,7 +106,7 @@ COPY --from=rpm /etc/yum.repos.d /etc/yum.repos.d
 COPY --from=rpm /etc/pki /etc/pki
 RUN set -ex \
      && mkdir /tmp/rpm                                                          \
-     && microdnf install dnf -y                                                 \
+     && dnf install dnf -y                                                      \
      && dnf update  -y --setopt=tsflags=nodocs                                  \
      && dnf install -y                                                          \
               --downloadonly                                                    \
@@ -118,7 +118,7 @@ RUN set -ex \
             ${varListRpms}                                                      \
      && cp -r /tmp/rpm ${varDirDependencies}/rpm                                \
      && ls -l ${varDirDependencies}/rpm/*.rpm                                   \
-     && microdnf install -y                                                     \
+     && dnf install -y                                                          \
                 bsdtar tar                                                      \
      && curl -L ${varUrlOpenshift}                                              \
           | tar xzvf - --directory ${varDirDependencies}/bin kubectl oc         \
